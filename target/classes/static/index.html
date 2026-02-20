@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XODO | ERP Voice</title>
+
+    <!-- Fuentes e Iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <!-- NUESTRO CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Capas de Fondo -->
+<div class="mesh-gradient"></div>
+<div class="grid-bg"></div>
+
+<div class="container">
+    <!-- Encabezado -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <span class="material-symbols-outlined">graphic_eq</span>
+            </div>
+            <span class="logo-text">XODO</span>
+        </div>
+        <nav>
+            <button class="btn-access">Login / Get Access</button>
+        </nav>
+    </header>
+
+    <!-- Selector de Negocio -->
+    <div class="business-selector glass-panel" style="margin: 20px auto; max-width: 800px; padding: 15px; display: flex; justify-content: space-around; gap: 10px;">
+        <button class="btn-biz active" onclick="cambiarNegocio('TIENDA')">🏪 Tiendita</button>
+        <button class="btn-biz" onclick="cambiarNegocio('FERRETERIA')">🔨 Ferretería</button>
+        <button class="btn-biz" onclick="cambiarNegocio('IMPRENTA')">🖨️ Imprenta</button>
+    </div>
+
+    <!-- Visor de Inventario (Ocultable) -->
+    <div id="inventoryPanel" class="inventory-panel glass-panel" style="margin: 10px auto; max-width: 800px; display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h4 style="margin:0; color: #00d2d3;">📦 Inventario Actual</h4>
+            <button onclick="toggleInventory()" style="background:none; border:none; color:#fff; cursor:pointer;">✖</button>
+        </div>
+        <table style="width: 100%; font-size: 0.9em; border-collapse: collapse;">
+            <thead>
+            <tr style="border-bottom: 1px solid #555; text-align: left;">
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Unidad</th>
+            </tr>
+            </thead>
+            <tbody id="inventoryTableBody">
+            <!-- Se llena con JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="hero">
+        <!-- Micrófono Central -->
+        <div class="main-mic-container" id="mainMicBtn">
+            <div class="mic-blur"></div>
+            <div class="mic-circle animate-pulse-ring">
+                <span id="micIconMain" class="material-symbols-outlined" style="font-size: 48px;">mic</span>
+            </div>
+        </div>
+
+        <!-- Títulos -->
+        <div style="margin-bottom: 3rem;">
+            <h1 class="hero-title">
+                ERP at the <br/>
+                <span class="text-glow">Speed of Sound</span>
+            </h1>
+            <p class="hero-description">
+                Adaptive. Voice-First. Enterprise Ready. <br/>
+                Command your business data without lifting a finger.
+            </p>
+        </div>
+
+        <!-- Barra de Comandos -->
+        <div class="command-bar-wrapper">
+            <div class="command-glow"></div>
+            <div class="command-bar glass-panel">
+                <div class="status-icon">
+                    <span id="inputStatusIcon" class="material-symbols-outlined animate-pulse">keyboard_voice</span>
+                </div>
+
+                <input id="commandInput" class="command-input" placeholder="Escribe o usa la cámara...'" type="text"/>
+
+                <!-- Botón de Cámara -->
+                <button class="btn-icon" id="cameraBtn" title="Escanear Producto">
+                    <span class="material-symbols-outlined">photo_camera</span>
+                </button>
+
+                <!-- AGREGADO: ID para que el JS lo detecte -->
+                <button class="btn-submit" id="btnSubmit">
+                    <span></span>
+                    <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+                </button>
+            </div>
+
+            <!-- Sugerencias -->
+            <div class="suggestions" id="suggestions">
+                <!-- Se llenarán con JS -->
+            </div>
+        </div>
+
+        <!-- AGREGADO: Aquí aparecerá el Ticket -->
+        <div id="resultContainer" style="width: 100%; max-width: 600px; margin-top: 20px;"></div>
+
+        <!-- Visualizador de Voz (Decorativo por ahora) -->
+        <div id="visualizer" class="visualizer"></div>
+    </main>
+
+    <!-- Pie de Página -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2026 XODO Inc. All rights reserved.</p>
+            <div class="footer-links">
+                <a class="footer-link" href="#">Privacy Policy</a>
+                <a class="footer-link" href="#">Terms of Service</a>
+                <a class="footer-link" href="#">Support</a>
+            </div>
+        </div>
+    </footer>
+</div>
+<!-- MODAL DE CÁMARA (Asegúrate de tener esto antes del script) -->
+<div id="cameraModal" class="camera-modal hidden" style="display:none;">
+    <div class="camera-content glass-panel" style="text-align: center; background: #000; padding: 20px; border-radius: 15px;">
+        <h3 style="color: #fff;">📸 Escanear Producto</h3>
+        <!-- EL VIDEO ES CLAVE -->
+        <video id="videoPreview" autoplay playsinline style="width: 100%; max-width: 400px; border: 2px solid #00d2d3; border-radius: 10px;"></video>
+        <canvas id="photoCanvas" style="display:none;"></canvas>
+
+        <div class="camera-controls" style="margin-top: 15px; display: flex; justify-content: center; gap: 20px;">
+            <button id="closeCamera" style="background: #ff6b6b; border: none; padding: 10px 20px; border-radius: 20px; color: white;">Cancelar</button>
+            <button id="snapPhoto" style="background: #00d2d3; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold;">Capturar</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
