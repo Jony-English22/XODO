@@ -51,7 +51,7 @@ public class AiService {
         new Thread(() -> {
             try {
                 System.out.println("🔥 XODO: Calentando motores de IA...");
-                client.models.generateContent("gemini-1.5-flash", "Hola", null);
+                client.models.generateContent("gemini-3-flash-preview", "Hola", null);
                 System.out.println("🚀 XODO: Motor IA listo y caliente.");
             } catch (Exception e) {
                 System.err.println("⚠️ No se pudo calentar la IA (No afecta funcionamiento)");
